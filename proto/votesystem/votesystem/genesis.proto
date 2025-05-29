@@ -1,0 +1,12 @@
+syntax = "proto3";
+package votesystem.votesystem;
+
+import "gogoproto/gogo.proto";
+import "votesystem/votesystem/params.proto";
+
+option go_package = "votesystem/x/votesystem/types";
+
+// GenesisState defines the votesystem module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

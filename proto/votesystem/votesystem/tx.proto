@@ -1,0 +1,7 @@
+syntax = "proto3";
+package votesystem.votesystem;
+
+option go_package = "votesystem/x/votesystem/types";
+
+// Msg defines the Msg service.
+service Msg {}
