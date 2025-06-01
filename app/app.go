@@ -110,9 +110,18 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
 
+	identitymodule "votesystem/x/identity"
+	identitymodulekeeper "votesystem/x/identity/keeper"
+	identitymoduletypes "votesystem/x/identity/types"
+	votecoinmodule "votesystem/x/votecoin"
+	votecoinmodulekeeper "votesystem/x/votecoin/keeper"
+	votecoinmoduletypes "votesystem/x/votecoin/types"
 	votesystemmodule "votesystem/x/votesystem"
 	votesystemmodulekeeper "votesystem/x/votesystem/keeper"
 	votesystemmoduletypes "votesystem/x/votesystem/types"
+	votingmodule "votesystem/x/voting"
+	votingmodulekeeper "votesystem/x/voting/keeper"
+	votingmoduletypes "votesystem/x/voting/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "votesystem/app/params"
@@ -174,6 +183,9 @@ var (
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		votesystemmodule.AppModuleBasic{},
+		identitymodule.AppModuleBasic{},
+		votecoinmodule.AppModuleBasic{},
+		votingmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -187,6 +199,9 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		identitymoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		votecoinmoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		votingmoduletypes.ModuleName:   {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -250,6 +265,12 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	VotesystemKeeper votesystemmodulekeeper.Keeper
+
+	IdentityKeeper identitymodulekeeper.Keeper
+
+	VotecoinKeeper votecoinmodulekeeper.Keeper
+
+	VotingKeeper votingmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -297,6 +318,9 @@ func New(
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
 		votesystemmoduletypes.StoreKey,
+		identitymoduletypes.StoreKey,
+		votecoinmoduletypes.StoreKey,
+		votingmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -527,6 +551,38 @@ func New(
 	)
 	votesystemModule := votesystemmodule.NewAppModule(appCodec, app.VotesystemKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.IdentityKeeper = *identitymodulekeeper.NewKeeper(
+		appCodec,
+		keys[identitymoduletypes.StoreKey],
+		memKeys[identitymoduletypes.MemStoreKey],
+		app.GetSubspace(identitymoduletypes.ModuleName),
+
+		app.BankKeeper,
+	)
+	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.VotecoinKeeper = *votecoinmodulekeeper.NewKeeper(
+		appCodec,
+		keys[votecoinmoduletypes.StoreKey],
+		memKeys[votecoinmoduletypes.MemStoreKey],
+		app.GetSubspace(votecoinmoduletypes.ModuleName),
+
+		app.BankKeeper,
+	)
+	votecoinModule := votecoinmodule.NewAppModule(appCodec, app.VotecoinKeeper, app.AccountKeeper, app.BankKeeper)
+
+	app.VotingKeeper = *votingmodulekeeper.NewKeeper(
+		appCodec,
+		keys[votingmoduletypes.StoreKey],
+		memKeys[votingmoduletypes.MemStoreKey],
+		app.GetSubspace(votingmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.IdentityKeeper,
+		app.VotecoinKeeper,
+	)
+	votingModule := votingmodule.NewAppModule(appCodec, app.VotingKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -589,6 +645,9 @@ func New(
 		transferModule,
 		icaModule,
 		votesystemModule,
+		identityModule,
+		votecoinModule,
+		votingModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -622,6 +681,9 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		votesystemmoduletypes.ModuleName,
+		identitymoduletypes.ModuleName,
+		votecoinmoduletypes.ModuleName,
+		votingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -648,6 +710,9 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		votesystemmoduletypes.ModuleName,
+		identitymoduletypes.ModuleName,
+		votecoinmoduletypes.ModuleName,
+		votingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -679,6 +744,9 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		votesystemmoduletypes.ModuleName,
+		identitymoduletypes.ModuleName,
+		votecoinmoduletypes.ModuleName,
+		votingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -904,6 +972,9 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(votesystemmoduletypes.ModuleName)
+	paramsKeeper.Subspace(identitymoduletypes.ModuleName)
+	paramsKeeper.Subspace(votecoinmoduletypes.ModuleName)
+	paramsKeeper.Subspace(votingmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

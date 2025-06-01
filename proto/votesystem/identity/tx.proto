@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package votesystem.identity;
+
+option go_package = "votesystem/x/identity/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc RegisterVoter (MsgRegisterVoter) returns (MsgRegisterVoterResponse);
+}
+message MsgRegisterVoter {
+  string voter             = 1;
+  string identityProofHash = 2;
+}
+
+message MsgRegisterVoterResponse {}
+
+message EventVoterRegistered {
+  string voter_address = 1;
+  string identity_proof_hash = 2;
+}

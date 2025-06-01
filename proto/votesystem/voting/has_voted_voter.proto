@@ -1,0 +1,13 @@
+syntax = "proto3";
+package votesystem.voting;
+
+option go_package = "votesystem/x/voting/types";
+
+message HasVotedVoter {
+  string index = 1; 
+  string electionID = 2; 
+  string voterAddress = 3; 
+  bool votedStatus = 4; 
+  
+}
+

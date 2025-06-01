@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package votesystem.voting;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "votesystem/voting/params.proto";
+import "votesystem/voting/vote_record.proto";
+import "votesystem/voting/has_voted_voter.proto";
+
+option go_package = "votesystem/x/voting/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/votesystem/voting/params";
+  
+  }
+  
+  // Queries a list of VoteRecord items.
+  rpc VoteRecord    (QueryGetVoteRecordRequest) returns (QueryGetVoteRecordResponse) {
+    option (google.api.http).get = "/votesystem/voting/vote_record/{id}";
+  
+  }
+  rpc VoteRecordAll (QueryAllVoteRecordRequest) returns (QueryAllVoteRecordResponse) {
+    option (google.api.http).get = "/votesystem/voting/vote_record";
+  
+  }
+  
+  // Queries a list of HasVotedVoter items.
+  rpc HasVotedVoter    (QueryGetHasVotedVoterRequest) returns (QueryGetHasVotedVoterResponse) {
+    option (google.api.http).get = "/votesystem/voting/has_voted_voter/{index}";
+  
+  }
+  rpc HasVotedVoterAll (QueryAllHasVotedVoterRequest) returns (QueryAllHasVotedVoterResponse) {
+    option (google.api.http).get = "/votesystem/voting/has_voted_voter";
+  
+  }
+  
+  // Queries a list of GetElectionResult items.
+  rpc GetElectionResult (QueryGetElectionResultRequest) returns (QueryGetElectionResultResponse) {
+    option (google.api.http).get = "/votesystem/voting/get_election_result/{electionID}";
+  
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetVoteRecordRequest {
+  uint64 id = 1;
+}
+
+message QueryGetVoteRecordResponse {
+  VoteRecord VoteRecord = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllVoteRecordRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllVoteRecordResponse {
+  repeated VoteRecord                             VoteRecord = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetHasVotedVoterRequest {
+  string index = 1;
+}
+
+message QueryGetHasVotedVoterResponse {
+  HasVotedVoter hasVotedVoter = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllHasVotedVoterRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllHasVotedVoterResponse {
+  repeated HasVotedVoter                          hasVotedVoter = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+}
+
+message QueryGetElectionResultRequest {
+  string electionID = 1;
+}
+
+message QueryGetElectionResultResponse {
+  string election_id = 1;
+  map<string, uint64> results = 2; // candidateID -> vote count
+}

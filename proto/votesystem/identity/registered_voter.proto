@@ -1,0 +1,11 @@
+syntax = "proto3";
+package votesystem.identity;
+
+option go_package = "votesystem/x/identity/types";
+
+message RegisteredVoter {
+  uint64 id = 1;
+  string voterAddress = 2; 
+  string identityProofHash = 3; 
+  
+}

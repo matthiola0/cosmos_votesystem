@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package votesystem.votecoin;
+
+option go_package = "votesystem/x/votecoin/types";
+
+import "cosmos/msg/v1/msg.proto"; // 建議保留，如果您的 message 有 option (cosmos.msg.v1.signer)
+
+// Msg defines the Msg service.
+service Msg {
+  rpc IssueVoteCoin (MsgIssueVoteCoin) returns (MsgIssueVoteCoinResponse);
+}
+
+message MsgIssueVoteCoin {
+  option (cosmos.msg.v1.signer) = "admin"; // 建議添加此選項以指明簽名者欄位
+  string admin     = 1;
+  string recipient = 2;
+  int32  amount    = 3;
+}
+
+// MsgIssueVoteCoinResponse defines the response structure for the IssueVoteCoin RPC.
+message MsgIssueVoteCoinResponse {
+  // 留空
+}
+
+message EventVoteCoinIssued {
+  string admin = 1;
+  string recipient = 2;
+  string amount = 3;
+}

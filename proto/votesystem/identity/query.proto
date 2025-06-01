@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package votesystem.identity;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "votesystem/identity/params.proto";
+import "votesystem/identity/registered_voter.proto";
+
+option go_package = "votesystem/x/identity/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/votesystem/identity/params";
+  
+  }
+  
+  // Queries a list of RegisteredVoter items.
+  rpc RegisteredVoter    (QueryGetRegisteredVoterRequest) returns (QueryGetRegisteredVoterResponse) {
+    option (google.api.http).get = "/votesystem/identity/registered_voter/{id}";
+  
+  }
+  rpc RegisteredVoterAll (QueryAllRegisteredVoterRequest) returns (QueryAllRegisteredVoterResponse) {
+    option (google.api.http).get = "/votesystem/identity/registered_voter";
+  
+  }
+  
+  // Queries a list of GetVoterStatus items.
+  rpc GetVoterStatus (QueryGetVoterStatusRequest) returns (QueryGetVoterStatusResponse) {
+    option (google.api.http).get = "/votesystem/identity/get_voter_status/{voterAddress}";
+  
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetRegisteredVoterRequest {
+  uint64 id = 1;
+}
+
+message QueryGetRegisteredVoterResponse {
+  RegisteredVoter RegisteredVoter = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllRegisteredVoterRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllRegisteredVoterResponse {
+  repeated RegisteredVoter                        RegisteredVoter = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
+}
+
+message QueryGetVoterStatusRequest {
+  string voterAddress = 1;
+}
+
+message QueryGetVoterStatusResponse {
+  bool is_registered = 1;
+  string identity_proof_hash = 2;
+}

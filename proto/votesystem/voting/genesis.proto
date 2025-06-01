@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package votesystem.voting;
+
+import "gogoproto/gogo.proto";
+import "votesystem/voting/params.proto";
+import "votesystem/voting/vote_record.proto";
+import "votesystem/voting/has_voted_voter.proto";
+
+option go_package = "votesystem/x/voting/types";
+
+// GenesisState defines the voting module's genesis state.
+message GenesisState {
+           Params        params            = 1 [(gogoproto.nullable) = false];
+  repeated VoteRecord    voteRecordList    = 2 [(gogoproto.nullable) = false];
+           uint64        voteRecordCount   = 3;
+  repeated HasVotedVoter hasVotedVoterList = 4 [(gogoproto.nullable) = false];
+}
+

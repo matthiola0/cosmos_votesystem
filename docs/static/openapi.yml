@@ -46437,6 +46437,289 @@ paths:
                         }
       tags:
         - Query
+  /votesystem/identity/get_voter_status/{voterAddress}:
+    get:
+      summary: Queries a list of GetVoterStatus items.
+      operationId: VotesystemIdentityGetVoterStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              is_registered:
+                type: boolean
+              identity_proof_hash:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: voterAddress
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /votesystem/identity/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: VotesystemIdentityParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /votesystem/identity/registered_voter:
+    get:
+      operationId: VotesystemIdentityRegisteredVoterAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              RegisteredVoter:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    voterAddress:
+                      type: string
+                    identityProofHash:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /votesystem/identity/registered_voter/{id}:
+    get:
+      summary: Queries a list of RegisteredVoter items.
+      operationId: VotesystemIdentityRegisteredVoter
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              RegisteredVoter:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  voterAddress:
+                    type: string
+                  identityProofHash:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /votesystem/votecoin/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: VotesystemVotecoinParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /votesystem/votesystem/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -46471,6 +46754,434 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /votesystem/voting/get_election_result/{electionID}:
+    get:
+      summary: Queries a list of GetElectionResult items.
+      operationId: VotesystemVotingGetElectionResult
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              election_id:
+                type: string
+              results:
+                type: object
+                additionalProperties:
+                  type: string
+                  format: uint64
+                title: candidateID -> vote count
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: electionID
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /votesystem/voting/has_voted_voter:
+    get:
+      operationId: VotesystemVotingHasVotedVoterAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              hasVotedVoter:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: string
+                    electionID:
+                      type: string
+                    voterAddress:
+                      type: string
+                    votedStatus:
+                      type: boolean
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /votesystem/voting/has_voted_voter/{index}:
+    get:
+      summary: Queries a list of HasVotedVoter items.
+      operationId: VotesystemVotingHasVotedVoter
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              hasVotedVoter:
+                type: object
+                properties:
+                  index:
+                    type: string
+                  electionID:
+                    type: string
+                  voterAddress:
+                    type: string
+                  votedStatus:
+                    type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: index
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /votesystem/voting/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: VotesystemVotingParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /votesystem/voting/vote_record:
+    get:
+      operationId: VotesystemVotingVoteRecordAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              VoteRecord:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    voterAddress:
+                      type: string
+                    candidateID:
+                      type: string
+                    electionID:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /votesystem/voting/vote_record/{id}:
+    get:
+      summary: Queries a list of VoteRecord items.
+      operationId: VotesystemVotingVoteRecord
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              VoteRecord:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  voterAddress:
+                    type: string
+                  candidateID:
+                    type: string
+                  electionID:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
 definitions:
@@ -75212,6 +75923,107 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  votesystem.identity.MsgRegisterVoterResponse:
+    type: object
+  votesystem.identity.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  votesystem.identity.QueryAllRegisteredVoterResponse:
+    type: object
+    properties:
+      RegisteredVoter:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            voterAddress:
+              type: string
+            identityProofHash:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  votesystem.identity.QueryGetRegisteredVoterResponse:
+    type: object
+    properties:
+      RegisteredVoter:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          voterAddress:
+            type: string
+          identityProofHash:
+            type: string
+  votesystem.identity.QueryGetVoterStatusResponse:
+    type: object
+    properties:
+      is_registered:
+        type: boolean
+      identity_proof_hash:
+        type: string
+  votesystem.identity.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  votesystem.identity.RegisteredVoter:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      voterAddress:
+        type: string
+      identityProofHash:
+        type: string
+  votesystem.votecoin.MsgIssueVoteCoinResponse:
+    type: object
+    description: >-
+      MsgIssueVoteCoinResponse defines the response structure for the
+      IssueVoteCoin RPC.
+
+
+      留空
+  votesystem.votecoin.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  votesystem.votecoin.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   votesystem.votesystem.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -75222,3 +76034,163 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  votesystem.voting.HasVotedVoter:
+    type: object
+    properties:
+      index:
+        type: string
+      electionID:
+        type: string
+      voterAddress:
+        type: string
+      votedStatus:
+        type: boolean
+  votesystem.voting.MsgCastVoteResponse:
+    type: object
+  votesystem.voting.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  votesystem.voting.QueryAllHasVotedVoterResponse:
+    type: object
+    properties:
+      hasVotedVoter:
+        type: array
+        items:
+          type: object
+          properties:
+            index:
+              type: string
+            electionID:
+              type: string
+            voterAddress:
+              type: string
+            votedStatus:
+              type: boolean
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  votesystem.voting.QueryAllVoteRecordResponse:
+    type: object
+    properties:
+      VoteRecord:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            voterAddress:
+              type: string
+            candidateID:
+              type: string
+            electionID:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  votesystem.voting.QueryGetElectionResultResponse:
+    type: object
+    properties:
+      election_id:
+        type: string
+      results:
+        type: object
+        additionalProperties:
+          type: string
+          format: uint64
+        title: candidateID -> vote count
+  votesystem.voting.QueryGetHasVotedVoterResponse:
+    type: object
+    properties:
+      hasVotedVoter:
+        type: object
+        properties:
+          index:
+            type: string
+          electionID:
+            type: string
+          voterAddress:
+            type: string
+          votedStatus:
+            type: boolean
+  votesystem.voting.QueryGetVoteRecordResponse:
+    type: object
+    properties:
+      VoteRecord:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          voterAddress:
+            type: string
+          candidateID:
+            type: string
+          electionID:
+            type: string
+  votesystem.voting.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  votesystem.voting.VoteRecord:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      voterAddress:
+        type: string
+      candidateID:
+        type: string
+      electionID:
+        type: string

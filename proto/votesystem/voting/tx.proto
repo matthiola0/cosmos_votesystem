@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package votesystem.voting;
+
+option go_package = "votesystem/x/voting/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CastVote (MsgCastVote) returns (MsgCastVoteResponse);
+}
+message MsgCastVote {
+  string voter       = 1;
+  string candidateID = 2;
+  string electionID  = 3;
+}
+
+message MsgCastVoteResponse {}
+
+message EventVoteCast {
+  string voter_address = 1;
+  string election_id = 2;
+  string candidate_id = 3;
+}
